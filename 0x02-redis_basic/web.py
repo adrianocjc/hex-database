@@ -4,7 +4,7 @@
 import redis
 import requests
 r = redis.Redis()
-count = 0
+count = 3
 
 
 def get_page(url: str) -> str:
