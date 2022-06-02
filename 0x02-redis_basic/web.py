@@ -9,7 +9,6 @@ from functools import wraps
 import redis
 import requests
 
-
 def requests_counter(method: Callable) -> Callable:
     """ Counts how many times a request has been made
     """
@@ -29,7 +28,6 @@ def requests_counter(method: Callable) -> Callable:
         r.set(cacheKey, html)
         r.expire(cacheKey, 20)
         return html
-
     return wrapper
 
 @requests_counter
