@@ -27,13 +27,12 @@ def requests_counter(method: Callable) -> Callable:
             return cached.decode('utf-8')
         html = method(url)
         r.set(cacheKey, html)
-        r.expire(cacheKey, 20)
+        r.expire(cacheKey, 10)
         return html
-    
+
     return wrapper
 
 @requests_counter
-
 def get_page(url: str) -> str:
     """ obtains html content for a given site url and returns it.
     """
