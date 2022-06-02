@@ -1,8 +1,8 @@
 #!/usr/bin/env python3
 
-"""
+'''
 method that implements an expiring web cache and tracker
-"""
+'''
 
 from typing import Callable
 from functools import wraps
@@ -18,16 +18,13 @@ def requests_counter(method: Callable) -> Callable:
     @wraps(method)
     def wrapper(url):
         """ wrapper fxn that counts actual no of requests made"""
-        cacheKey = "cached:" + url
-        countKey = "count:" + url
-
-        r.incr(countKey)
-        cached = r.get(cacheKey)
+        r.incr(f"count:{url}")
+        cached_ = r.get(f"cached:{url}")
         if cached:
             return cached.decode('utf-8')
+
         html = method(url)
-        r.set(cacheKey, html)
-        r.expire(cacheKey, 10)
+        r.setex(f"cached:{url}", 10, html)
         return html
 
     return wrapper
