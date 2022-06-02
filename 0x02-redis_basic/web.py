@@ -1,21 +1,36 @@
 #!/usr/bin/env python3
 """
-create a web cache
+Cache web module
 """
+
 import redis
 import requests
-r = redis.Redis()
-count = 0
+from typing import Callable
+from functools import wraps
+
+rd = redis.Redis()
 
 
+def count_requests(method: Callable) -> Callable:
+    """requests"""
+
+    @wraps(method)
+    def wrapper(url):
+        """wrapper"""
+        rd.incr(f"count:{url}")
+        cached_html = rd.get(f"cached:{url}")
+        if cached_html:
+            return cached_html.decode('utf-8')
+
+        html = method(url)
+        rd.setex(f"cached:{url}", 10, html)
+        return html
+
+    return wrapper
+
+
+@count_requests
 def get_page(url: str) -> str:
-    """obtain the HTML content of a particular URL and cache it"""
-    r.set(f"cached:{url}", count)
-    _response = requests.get(url)
-    r.inr(f"count:{url}")
-    r.setex(f"cached:{url}", 10, r.get(f"cached:{url}"))
-    return _response.text
-
-
-if __name__ == "__main__":
-    get_page('http://slowly.robertomurray.co.uk')
+    """pages"""
+    req = requests.get(url)
+    return req.text
