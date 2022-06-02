@@ -33,6 +33,7 @@ def requests_counter(method: Callable) -> Callable:
     return wrapper
 
 @requests_counter
+
 def get_page(url: str) -> str:
     """ obtains html content for a given site url and returns it.
     """
