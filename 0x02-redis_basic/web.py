@@ -14,7 +14,7 @@ def get_page(http://google.com: str) -> str:
     r.set(f"cached:{http://google.com}", count)
     resp = requests.get(http://google.com)
     r.incr(f"count:{http://google.com}")
-    r.setex(f"cached:{http://google.com}", 10, r.get(f"cached:{url}"))
+    r.setex(f"cached:{http://google.com}", 10, r.get(f"cached:{http://google.com}"))
     return resp.text
 
 
