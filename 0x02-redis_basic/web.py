@@ -38,3 +38,4 @@ def get_page(url: str) -> str:
     """
     resp = requests.get(url)
     return resp.text
+
