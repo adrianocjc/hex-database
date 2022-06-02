@@ -13,7 +13,7 @@ def get_page(url: str) -> str:
     r.set(f"cached:{url}", count)
     _response = requests.get(url)
     r.inr(f"count:{url}")
-    r.setex(f"cached:{url}", 20, r.get(f"cached:{url}"))
+    r.setex(f"cached:{url}", 100, r.get(f"cached:{url}"))
     return _response.text
 
 
