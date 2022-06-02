@@ -1,19 +1,38 @@
 #!/usr/bin/env python3
-""" Main file """
 
-Cache = __import__('exercise').Cache
+'''
+method that implements an expiring web cache and tracker
+'''
 
-cache = Cache()
+from typing import Callable
+from functools import wraps
+import redis
+import requests
 
-s1 = cache.store("first")
-print(s1)
-s2 = cache.store("secont")
-print(s2)
-s3 = cache.store("third")
-print(s3)
 
-inputs = cache._redis.lrange("{}:inputs".format(cache.store.__qualname__), 0, -1)
-outputs = cache._redis.lrange("{}:outputs".format(cache.store.__qualname__), 0, -1)
+def requests_counter(method: Callable) -> Callable:
+    """ Counts how many times a request has been made
+    """
+    r = redis.Redis()
 
-print("inputs: {}".format(inputs))
-print("outputs: {}".format(outputs))
+    @wraps(method)
+    def wrapper(url):
+        """ wrapper fxn that counts actual no of requests made"""
+        r.incr(f"count:{url}")
+        cached_ = r.get(f"cached:{url}")
+        if cached:
+            return cached.decode('utf-8')
+
+        html = method(url)
+        r.setex(f"cached:{url}", 10, html)
+        return html
+
+    return wrapper
+
+
+@requests_counter
+def get_page(url: str) -> str:
+    """ obtains html content for a given site url and returns it.
+    """
+    resp = requests.get(url)
+    return resp.text
