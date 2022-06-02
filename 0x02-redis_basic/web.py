@@ -7,14 +7,14 @@ r = redis.Redis()
 count = 0
 
 
-def get_page(http://google.com: str) -> str:
+def get_page(url: str) -> str:
     """ track how many times a particular URL was accessed in the key
         "count:{url}"
         and cache the result with an expiration time of 10 seconds """
-    r.set(f"cached:{http://google.com}", count)
-    resp = requests.get(http://google.com)
-    r.incr(f"count:{http://google.com}")
-    r.setex(f"cached:{http://google.com}", 10, r.get(f"cached:{http://google.com}"))
+    r.set(f"cached:{url}", count)
+    resp = requests.get(url)
+    r.incr(f"count:{url}")
+    r.setex(f"cached:{url}", 10, r.get(f"cached:{url}"))
     return resp.text
 
 
