@@ -27,7 +27,7 @@ def requests_counter(method: Callable) -> Callable:
             return cached.decode('utf-8')
         html = method(url)
         r.set(cacheKey, html)
-        r.expire(cacheKey, 9)
+        r.expire(cacheKey, 10)
         return html
 
     return wrapper
