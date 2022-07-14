@@ -1,27 +1,23 @@
 #!/usr/bin/env python3
-""" some stats of nginx logs
-"""
+""" Log stats """
 from pymongo import MongoClient
-
-
-# def log_stats(collection):
-#     return collection.find()
 
 
 if __name__ == "__main__":
     client = MongoClient('mongodb://127.0.0.1:27017')
-    collection = client.logs.nginx
-
+    db_nginx = client.logs.nginx
     methods = ["GET", "POST", "PUT", "PATCH", "DELETE"]
 
-    documents = collection.count_documents({})
-    print(f"{documents} logs")
-    print("Methods:")
-    for method in methods:
-        count = collection.count_documents({"method": method})
-        print(f'\tmethod {method}: {count}')
+    count_logs = db_nginx.count_documents({})
+    print(f'{count_logs} logs')
 
-    status_check = collection.count_documents(
+    print('Methods:')
+    for method in methods:
+        count_method = db_nginx.count_documents({'method': method})
+        print(f'\tmethod {method}: {count_method}')
+
+    check = db_nginx.count_documents(
         {"method": "GET", "path": "/status"}
     )
-    print(f'{status_check} status check')
+
+    print(f'{check} status check')
